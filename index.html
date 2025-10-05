@@ -1,15 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITF</title>
+    <title>Mini Bank Simulator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+        section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        label { display: block; margin-top: 10px; }
+        input { padding: 5px; margin-top: 5px; width: 200px; }
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #0078d7;
+            color: white;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+            resize: none;
+        }
+    </style>
 </head>
 <body>
-    
-    <h1>ITF Simple Bank</h1>
-    <p>Week 14</p>
-    Enter number: <input type="number" value="0">
-    <button onclick="add()"+1> Submit</button>
+    <link rel="stylesheet" href="style.css">
+    <div class="navbar">
+        <p>week 14</p>
+        <h1> ITF website</h1>
+        <p>68070082</p>
+    </div>
+    <h1>💰 Account Overview</h1>
+    <section>
+        <h2>👨🏻‍💼 Account Information</h2>
+        <p>Name:Nuttawat Thumsa</p>
+        <p>Type:Saving Account</p>
+    </section>
+
+    <section>
+        <h2>⌛ Transaction History</h2>
+        <textarea id="history" readonly></textarea>
+    </section>
+
+    <section>
+        <h2>📈 Balance Information</h2>
+        <p>กรุณากรอกยอดเริ่มต้นก่อนทำรายการ</p>
+
+        <label>Account Balance (ยอดเงินในบัญชี):</label>
+        <input type="number" id="accountBalance" placeholder="ใส่จำนวนเงิน">
+
+        <label>Cash Balance (ยอดเงินสด):</label>
+        <input type="number" id="cashBalance" placeholder="ใส่จำนวนเงิน">
+
+        <br>
+        <button onclick="setBalance()">ตั้งค่ายอดเงิน</button>
+    </section>
+
+    <section>
+        <h2>🏦 Bank Operation</h2>
+
+        <label>จำนวนเงินที่ต้องการฝาก/ถอน:</label>
+        <input type="number" id="operationAmount" placeholder="ใส่จำนวนเงิน">
+
+        <br>
+        <button onclick="deposit()">ฝาก (Deposit)</button>
+        <button onclick="withdraw()">ถอน (Withdraw)</button>
+    </section>
+
+    <h1>💸 Financial Tools</h1>
+    <section>
+        <h2>🌍 Currency Converter</h2>
+        input balance:<input type="number" placeholder="0"><br>
+        output balance:<input type="number" placeholder="0">
+        <select>
+            <option value="THB">THB</option>
+            <option value="US">US</option>
+        </select>
+        <button>Convert</button>
+    </section>
+
+<script>
+let accountBalance = 0;
+let cashBalance = 0;
+let initialized = false;
+
+function log(message) {
+    const history = document.getElementById("history");
+    const time = new Date().toLocaleTimeString();
+    history.value = `[${time}] ${message}\n` + history.value;
+}
+
+function setBalance() {
+    accountBalance = parseFloat(document.getElementById("accountBalance").value);
+    cashBalance = parseFloat(document.getElementById("cashBalance").value);
+
+    if (isNaN(accountBalance) || isNaN(cashBalance)) {
+        alert("กรุณากรอกยอดให้ครบทั้งสองช่อง");
+        return;
+    }
+
+    initialized = true;
+    log(`ตั้งค่า Account Balance = ${accountBalance.toFixed(2)} | Cash Balance = ${cashBalance.toFixed(2)}`);
+    alert("ตั้งค่ายอดเงินเริ่มต้นเรียบร้อย!");
+}
+
+function deposit() {
+    if (!initialized) {
+        alert("กรุณากรอกยอดเริ่มต้นก่อนทำรายการ!");
+        return;
+    }
+
+    const amount = parseFloat(document.getElementById("operationAmount").value);
+    if (isNaN(amount) || amount <= 0) {
+        alert("กรุณาใส่จำนวนเงินที่ถูกต้อง");
+        return;
+    }
+
+    if (cashBalance < amount) {
+        alert("ยอดเงินสดไม่เพียงพอสำหรับการฝาก!");
+        return;
+    }
+
+    cashBalance -= amount;
+    accountBalance += amount;
+    log(`ฝากเงิน ${amount.toFixed(2)} บาท | บัญชี: ${accountBalance.toFixed(2)} | เงินสด: ${cashBalance.toFixed(2)}`);
+}
+
+function withdraw() {
+    if (!initialized) {
+        alert("กรุณากรอกยอดเริ่มต้นก่อนทำรายการ!");
+        return;
+    }
+
+    const amount = parseFloat(document.getElementById("operationAmount").value);
+    if (isNaN(amount) || amount <= 0) {
+        alert("กรุณาใส่จำนวนเงินที่ถูกต้อง");
+        return;
+    }
+
+    if (accountBalance < amount) {
+        alert("ยอดเงินในบัญชีไม่เพียงพอสำหรับการถอน!");
+        return;
+    }
+
+    accountBalance -= amount;
+    cashBalance += amount;
+    log(`ถอนเงิน ${amount.toFixed(2)} บาท | บัญชี: ${accountBalance.toFixed(2)} | เงินสด: ${cashBalance.toFixed(2)}`);
+}
+</script>
+
 </body>
 </html>
